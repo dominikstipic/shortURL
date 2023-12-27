@@ -10,15 +10,14 @@ def log_request():
     d = {"request_method": request.method, 
          "request_date": request_date, 
          "request_uri": request.url,
-         "ip": request.remote_addr
-         }
+         "ip": request.remote_addr}
     write(d)
     return d
 
 @app.route("/memory")
 def memory():
     log_request()
-    
+
 
 
 if __name__ == "__main__":
