@@ -11,6 +11,7 @@ class Base(DeclarativeBase):
 class Request(Base):
     __tablename__ = "shorturl"
     id = sa.Column(sa.Integer, primary_key=True, autoincrement=True)
+    resource_name = sa.Column(sa.String)
     request_method = sa.Column(sa.String)
     request_date = sa.Column(sa.DateTime)
     request_uri = sa.Column(sa.DateTime)
