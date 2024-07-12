@@ -5,6 +5,8 @@ from models import write
 import logging
 
 app = Flask(__name__, template_folder=".")
+logger = logging.getLogger(__name__)
+logging.basicConfig(filename="example.log", format='%(asctime)s %(message)s')
 
 def log_request(resource_name):
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -13,7 +15,8 @@ def log_request(resource_name):
          "request_date": request_date, 
          "request_uri": request.url,
          "ip": request.remote_addr}
-    write(d)
+    logger = logging.getLogger(__name__)
+    logger.info("new request")
 
 @app.route("/")
 def index():
@@ -27,7 +30,7 @@ def grb():
         format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
         datefmt='%Y-%m-%d %H:%M:%S'  # Date format
     )
-    logger = logging.getLogger()
+    log_request("grb")
     return send_file('repo/grb.png', mimetype='png')
 
 @app.route("/memory")
@@ -50,5 +53,5 @@ def registration():
 
 if __name__ == "__main__":
     print("Starting server!")
-    app.run(host="127.0.0.1", port=8080, debug=True)
-    #serve(app, host="0.0.0.0", port=80)
+    #app.run(host="127.0.0.1", port=8080, debug=True)
+    serve(app, host="0.0.0.0", port=80)
