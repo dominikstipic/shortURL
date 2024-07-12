@@ -2,6 +2,7 @@ from flask import Flask, request, send_file, render_template
 from datetime import datetime
 from waitress import serve
 from models import write
+import logging
 
 app = Flask(__name__, template_folder=".")
 
@@ -17,6 +18,17 @@ def log_request(resource_name):
 @app.route("/")
 def index():
     return render_template('htmls/index.html')
+
+@app.route("/grb")
+def grb():
+    logging.basicConfig(
+        filename='event_log.log',  # Log file name
+        level=logging.INFO,       # Log level
+        format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
+        datefmt='%Y-%m-%d %H:%M:%S'  # Date format
+    )
+    logger = logging.getLogger()
+    return send_file('repo/grb.png', mimetype='png')
 
 @app.route("/memory")
 def memory():
@@ -38,5 +50,5 @@ def registration():
 
 if __name__ == "__main__":
     print("Starting server!")
-    #app.run(host="127.0.0.1", port=8080, debug=True)
-    serve(app, host="0.0.0.0", port=80)
+    app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=80)
