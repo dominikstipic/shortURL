@@ -5,8 +5,9 @@ from models import write
 import logging
 
 app = Flask(__name__, template_folder=".")
-logger = logging.getLogger(__name__)
-logging.basicConfig(filename="example.log", format='%(asctime)s %(message)s')
+logger = logging.getLogger("doms")
+logging.basicConfig(filename="example.log", level=logging.INFO)
+logging.getLogger('werkzeug').disabled = True
 
 def log_request(resource_name):
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -15,21 +16,21 @@ def log_request(resource_name):
          "request_date": request_date, 
          "request_uri": request.url,
          "ip": request.remote_addr}
-    logger = logging.getLogger(__name__)
-    logger.info("new request")
+    logger = logging.getLogger("doms")
+    logger.info("{0}".format(d))
 
 @app.route("/")
 def index():
     return render_template('htmls/index.html')
 
+
+@app.route("/is")
+def iron_standard():
+    log_request("is")
+    return send_file('repo/is.png', mimetype='png')
+
 @app.route("/grb")
 def grb():
-    logging.basicConfig(
-        filename='event_log.log',  # Log file name
-        level=logging.INFO,       # Log level
-        format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
-        datefmt='%Y-%m-%d %H:%M:%S'  # Date format
-    )
     log_request("grb")
     return send_file('repo/grb.png', mimetype='png')
 
@@ -53,5 +54,5 @@ def registration():
 
 if __name__ == "__main__":
     print("Starting server!")
-    #app.run(host="127.0.0.1", port=8080, debug=True)
-    serve(app, host="0.0.0.0", port=80)
+    app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=80)
