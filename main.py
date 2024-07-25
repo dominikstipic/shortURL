@@ -45,6 +45,12 @@ def grb(entity):
     log_request("feud", entity)
     return send_file('repo/grb.png', mimetype='png')
 
+@app.route('/octo/<regex("[a-zA-Z0-9_]+"):entity>', methods=['GET'])
+def octo(entity):
+    print("Octo")
+    log_request("octo", entity)
+    return send_file('repo/octo.png', mimetype='png')
+
 @app.route("/memory")
 def memory():
     log_request("memory")
