@@ -61,6 +61,10 @@ def qr_scan(id):
     print(id)
     return "200"
 
+@app.route("/me")
+def me():
+    return send_file('repo/me.png', mimetype='png') 
+
 @app.route("/registration", methods=["POST"])
 def registration():
     user_data = request.json
@@ -69,5 +73,5 @@ def registration():
 
 if __name__ == "__main__":
     print("Starting server!")
-    #app.run(host="127.0.0.1", port=8080, debug=True)
-    serve(app, host="0.0.0.0", port=80)
+    app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=80)
