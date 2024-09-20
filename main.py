@@ -61,12 +61,15 @@ def qr_scan(id):
     print(id)
     return "200"
 
-@app.route("/me")
-def me():
-    return send_file('repo/me.png', mimetype='png') 
-
 @app.route("/registration", methods=["POST"])
 def registration():
+    user_data = request.json
+    print(user_data)
+    return "200"
+
+@app.route("/authentication", methods=["POST"])
+def registration(credentials):
+    print(credentials)
     user_data = request.json
     print(user_data)
     return "200"
