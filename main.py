@@ -1,4 +1,5 @@
 from flask import Flask, request, send_file, render_template
+import flask
 from datetime import datetime
 from waitress import serve
 import logging
@@ -67,8 +68,12 @@ def registration():
     print(user_data)
     return "200"
 
+@app.route("/vimeo/book", methods=["POST"])
+def vimeo():
+    return flask.redirect("https://vimeo.com/1030737980", code=302)
+
 @app.route("/authentication", methods=["POST"])
-def registration(credentials):
+def auth(credentials):
     print(credentials)
     user_data = request.json
     print(user_data)
