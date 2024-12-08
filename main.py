@@ -40,6 +40,13 @@ def iron_standard(entity):
     log_request("is", entity)
     return send_file('repo/is.png', mimetype='png')
 
+
+@app.route('/me/<regex("[a-zA-Z0-9_]+"):entity>', methods=['GET'])
+def me(entity):
+    print("ME")
+    log_request("ME", entity)
+    return send_file('repo/cv.png', mimetype='png')
+
 @app.route('/feud/<regex("[a-zA-Z0-9_]+"):entity>', methods=['GET'])
 def grb(entity):
     print("Feudal")
@@ -81,5 +88,5 @@ def auth(credentials):
 
 if __name__ == "__main__":
     print("Starting server!")
-    serve(app, host="0.0.0.0", port=82)
-    #app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=82)
+    app.run(host="127.0.0.1", port=8080, debug=True)
