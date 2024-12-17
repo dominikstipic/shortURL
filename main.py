@@ -25,6 +25,8 @@ def log_request(resource_name, entity_name):
          "request_method": request.method, 
          "request_date": request_date, 
          "request_uri": request.url,
+         "user_agent": request.user_agent,
+         "cookies": request.cookies,
          "ip": request.remote_addr,
          "entity": entity_name}
     logger = logging.getLogger("doms")
@@ -85,6 +87,12 @@ def auth(credentials):
     user_data = request.json
     print(user_data)
     return "200"
+
+@app.route("/test", methods=["GET"])
+def test():
+    log_request("test")
+    return "200"
+
 
 if __name__ == "__main__":
     print("Starting server!")
