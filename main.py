@@ -27,6 +27,8 @@ def log_request(resource_name, entity_name):
          "request_uri": request.url,
          "user_agent": request.user_agent,
          "cookies": request.cookies,
+         "user_agent": request.user_agent,
+         "cookies": request.cookies,
          "ip": request.remote_addr,
          "entity": entity_name}
     logger = logging.getLogger("doms")
