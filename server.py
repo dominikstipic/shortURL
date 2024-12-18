@@ -17,6 +17,8 @@ class RegexConverter(BaseConverter):
 
 app.url_map.converters['regex'] = RegexConverter
 
+MY_IP = None
+
 #######################################
 
 def log_request(resource_name, entity_name):
@@ -25,12 +27,14 @@ def log_request(resource_name, entity_name):
          "request_method": request.method, 
          "request_date": request_date, 
          "request_uri": request.url,
-         "user_agent": request.user_agent,
-         "cookies": request.cookies,
-         "user_agent": request.user_agent,
-         "cookies": request.cookies,
+         "user-agent": request.headers.get('User-Agent'),
          "ip": request.remote_addr,
-         "entity": entity_name}
+         "entity": entity_name,
+         "cookies": None}
+    cookies_dict = {}
+    for k,v in request.cookies.items(): cookies_dict[k] = v
+    d["cookies"] = cookies_dict
+    d["cookies_length"] = len(cookies_dict)
     logger = logging.getLogger("doms")
     logger.info("{0}".format(d))
 
@@ -90,13 +94,29 @@ def auth(credentials):
     print(user_data)
     return "200"
 
-@app.route("/test", methods=["GET"])
-def test():
-    log_request("test")
-    return "200"
 
+@app.route('/test/<regex("[a-zA-Z0-9_]+?"):entity>', methods=['GET'])
+def test(entity):
+    log_request("test", entity)
+    result = []
+    with open("example.log") as fp:
+        result = fp.readlines()
+    return result
+
+
+@app.route('/ip', methods=['POST'])
+def ip():
+    global MY_IP
+    data = request.data
+    MY_IP = data
+    print(data)
+
+
+@app.route('/live', methods=['GET'])
+def is_live():
+    print("LIVE")
 
 if __name__ == "__main__":
     print("Starting server!")
-    #serve(app, host="0.0.0.0", port=82)
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    serve(app, host="0.0.0.0", port=82)
+    #app.run(host="127.0.0.1", port=8080, debug=True)
