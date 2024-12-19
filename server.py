@@ -3,6 +3,7 @@ import flask
 from datetime import datetime
 from waitress import serve
 import logging
+import json
 from werkzeug.routing import BaseConverter
 
 app = Flask(__name__, template_folder=".")
@@ -50,6 +51,17 @@ def log_request(resource_name, entity_name):
     d["cookies_length"] = len(cookies_dict)
     logger = logging.getLogger("doms")
     logger.info("{0}".format(d))
+
+def transform_log_to_json_list(log_path) -> list:
+    result = []
+    with open(log_path, "r") as fp:
+        lines = fp.readlines()
+        for row in lines:
+            row = row.replace("INFO:doms:","")
+            row = row.replace("'", '"')
+            dictionary = json.loads(row)
+            result.append(dictionary)
+    return result
 
 #######################################
 
@@ -131,7 +143,11 @@ def is_live():
     print("LIVE")
     return "LIVE"
 
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    return transform_log_to_json_list("example.log")
+
 if __name__ == "__main__":
     print("Starting server!")
-    serve(app, host="0.0.0.0", port=82)
-    #app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=82)
+    app.run(host="127.0.0.1", port=8080, debug=True)
