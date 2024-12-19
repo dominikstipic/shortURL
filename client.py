@@ -1,7 +1,7 @@
 import time
 import requests
 
-SLEEP_TIME = 10*60
+SLEEP_TIME = 1*60
 HOST_NAME = "64.226.98.170"
 PORT = 82
 url = f"http://{HOST_NAME}:{PORT}/ip"
