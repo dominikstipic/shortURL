@@ -22,6 +22,8 @@ MY_IP = None
 #######################################
 
 def log_request(resource_name, entity_name):
+    if request.remote_addr == MY_IP:
+        return
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     d = {"resource_name": resource_name,
          "request_method": request.method, 
@@ -94,7 +96,6 @@ def auth(credentials):
     print(user_data)
     return "200"
 
-
 @app.route('/test/<regex("[a-zA-Z0-9_]+?"):entity>', methods=['GET'])
 def test(entity):
     log_request("test", entity)
@@ -107,14 +108,16 @@ def test(entity):
 @app.route('/ip', methods=['POST'])
 def ip():
     global MY_IP
-    data = request.data
+    data = request.data.decode()
     MY_IP = data
-    print(data)
+    print(f"current ip address: {data}")
+    return 200
 
 
 @app.route('/live', methods=['GET'])
 def is_live():
     print("LIVE")
+    return "LIVE"
 
 if __name__ == "__main__":
     print("Starting server!")
