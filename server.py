@@ -19,10 +19,20 @@ app.url_map.converters['regex'] = RegexConverter
 
 MY_IP = None
 
-#######################################
+def clean_string(s):
+    result = ""
+    for i in range(len(s)):
+        c = s[i]
+        if c == '"':continue
+        else:
+            result+=c
+    return result
 
 def log_request(resource_name, entity_name):
-    if request.remote_addr == MY_IP:
+    global MY_IP
+    foreign_ip = clean_string(request.remote_addr)
+    if foreign_ip == MY_IP:
+        print("local request")
         return
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     d = {"resource_name": resource_name,
@@ -30,7 +40,8 @@ def log_request(resource_name, entity_name):
          "request_date": request_date, 
          "request_uri": request.url,
          "user-agent": request.headers.get('User-Agent'),
-         "ip": request.remote_addr,
+         "my_ip": MY_IP,
+         "ip": foreign_ip,
          "entity": entity_name,
          "cookies": None}
     cookies_dict = {}
@@ -39,6 +50,8 @@ def log_request(resource_name, entity_name):
     d["cookies_length"] = len(cookies_dict)
     logger = logging.getLogger("doms")
     logger.info("{0}".format(d))
+
+#######################################
 
 @app.route("/")
 def index():
@@ -104,15 +117,14 @@ def test(entity):
         result = fp.readlines()
     return result
 
-
 @app.route('/ip', methods=['POST'])
 def ip():
     global MY_IP
     data = request.data.decode()
+    data = clean_string(data)
     MY_IP = data
     print(f"current ip address: {data}")
     return 200
-
 
 @app.route('/live', methods=['GET'])
 def is_live():
