@@ -124,7 +124,7 @@ def ip():
     data = clean_string(data)
     MY_IP = data
     print(f"current ip address: {data}")
-    return 200
+    return "200"
 
 @app.route('/live', methods=['GET'])
 def is_live():
