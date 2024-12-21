@@ -53,7 +53,7 @@ def log_request(resource_name, entity_name, self_request_check=True):
     logger = logging.getLogger("doms")
     logger.info("{0}".format(d))
 
-def log_request():
+def get_log_request():
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     d = {"request_method": request.method, 
          "request_date": request_date, 
@@ -65,9 +65,7 @@ def log_request():
     for k,v in request.cookies.items(): cookies_dict[k] = v
     d["cookies"] = cookies_dict
     d["cookies_length"] = len(cookies_dict)
-    print(d)
-    logger = logging.getLogger("doms")
-    logger.info("{0}".format(d))
+    return d
 
 def transform_log_to_json_list(log_path) -> list:
     result = []
@@ -157,9 +155,7 @@ def ip():
 
 @app.route('/live', methods=['GET'])
 def is_live():
-    log_request()
-    print("LIVE")
-    return "LIVE"
+    return get_log_request()
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
