@@ -29,12 +29,13 @@ def clean_string(s):
             result+=c
     return result
 
-def log_request(resource_name, entity_name):
-    global MY_IP
-    foreign_ip = clean_string(request.remote_addr)
-    if foreign_ip == MY_IP:
-        print("local request")
-        return
+def log_request(resource_name, entity_name, self_request_check=True):
+    if self_request_check:
+        global MY_IP
+        foreign_ip = clean_string(request.remote_addr)
+        if foreign_ip == MY_IP:
+            print("local request")
+            return
     request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     d = {"resource_name": resource_name,
          "request_method": request.method, 
@@ -44,6 +45,21 @@ def log_request(resource_name, entity_name):
          "my_ip": MY_IP,
          "ip": foreign_ip,
          "entity": entity_name,
+         "cookies": None}
+    cookies_dict = {}
+    for k,v in request.cookies.items(): cookies_dict[k] = v
+    d["cookies"] = cookies_dict
+    d["cookies_length"] = len(cookies_dict)
+    logger = logging.getLogger("doms")
+    logger.info("{0}".format(d))
+
+def log_request():
+    request_date = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    d = {"request_method": request.method, 
+         "request_date": request_date, 
+         "request_uri": request.url,
+         "user-agent": request.headers.get('User-Agent'),
+         "my_ip": MY_IP,
          "cookies": None}
     cookies_dict = {}
     for k,v in request.cookies.items(): cookies_dict[k] = v
@@ -145,9 +161,10 @@ def is_live():
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
+    log_request()
     return transform_log_to_json_list("example.log")
 
 if __name__ == "__main__":
     print("Starting server!")
-    #serve(app, host="0.0.0.0", port=82)
-    app.run(host="127.0.0.1", port=8080, debug=True)
+    serve(app, host="0.0.0.0", port=82)
+    #app.run(host="127.0.0.1", port=8080, debug=True)
