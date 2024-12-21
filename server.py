@@ -162,6 +162,7 @@ def is_live():
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
+    log_request()
     return transform_log_to_json_list("example.log")
 
 if __name__ == "__main__":
