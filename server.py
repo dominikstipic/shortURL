@@ -65,6 +65,7 @@ def log_request():
     for k,v in request.cookies.items(): cookies_dict[k] = v
     d["cookies"] = cookies_dict
     d["cookies_length"] = len(cookies_dict)
+    print(d)
     logger = logging.getLogger("doms")
     logger.info("{0}".format(d))
 
@@ -162,6 +163,7 @@ def is_live():
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
+    log_request()
     return transform_log_to_json_list("example.log")
 
 if __name__ == "__main__":
