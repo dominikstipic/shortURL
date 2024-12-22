@@ -58,8 +58,11 @@ def get_log_request():
     d = {"request_method": request.method, 
          "request_date": request_date, 
          "request_uri": request.url,
+         "origin": request.origin,
+         "headers": dict(request.headers),
+         "referrer": request.referrer,
          "user-agent": request.headers.get('User-Agent'),
-         "my_ip": MY_IP,
+         "my_ip": request.remote_addr,
          "cookies": None}
     cookies_dict = {}
     for k,v in request.cookies.items(): cookies_dict[k] = v
@@ -164,5 +167,5 @@ def get_logs():
 
 if __name__ == "__main__":
     print("Starting server!")
-    serve(app, host="0.0.0.0", port=82)
-    #app.run(host="127.0.0.1", port=8080, debug=True)
+    #serve(app, host="0.0.0.0", port=82)
+    app.run(host="127.0.0.1", port=8080, debug=True)
