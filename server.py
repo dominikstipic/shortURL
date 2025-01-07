@@ -1,9 +1,10 @@
-from flask import Flask, request, send_file, render_template
+from flask import Flask, request, send_file, render_template, redirect
 import flask
 from datetime import datetime
 from waitress import serve
 import logging
 import json
+import pprint
 from werkzeug.routing import BaseConverter
 
 app = Flask(__name__, template_folder=".")
@@ -159,6 +160,17 @@ def ip():
 @app.route('/live', methods=['GET'])
 def is_live():
     return get_log_request()
+
+@app.route('/v1beta/models/gemini-1.5-flash:generateContent', methods=['POST'])
+def feedback():
+    data = request.data
+    glr = get_log_request()
+    pprint.pprint(glr)
+    return data
+    
+@app.route('/linkedin', methods=['GET'])
+def linkedin():
+    return redirect("https://www.linkedin.com/in/dominik-stipi%C4%87-5a9b42333/")
 
 @app.route('/logs', methods=['GET'])
 def get_logs():
